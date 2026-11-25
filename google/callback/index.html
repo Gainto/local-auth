@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title></title>
+<style>
+  body { font: 16px/1.5 system-ui, sans-serif; max-width: 36rem; margin: 3rem auto; padding: 0 1rem; color: #111; }
+  code, [data-line] { display: block; padding: .75rem; background: #f3f3f3; border-radius: .4rem; user-select: all; word-break: break-all; }
+  .error { color: #a00; }
+</style>
+</head>
+<body>
+<div id="out"></div>
+<script>
+(function () {
+  var out = document.getElementById('out');
+  var params = new URLSearchParams(location.search);
+  var state = params.get('state') || '';
+  var code = params.get('code') || '';
+  var error = params.get('error');
+
+  function add(tag, text, cls) {
+    var el = document.createElement(tag);
+    el.textContent = text;
+    if (cls) el.className = cls;
+    out.appendChild(el);
+    return el;
+  }
+
+  if (error) {
+    add('p', 'Google hat die Verbindung abgelehnt / Google declined the connection.', 'error');
+    add('p', error);
+    var description = params.get('error_description');
+    if (description) add('p', description);
+    return;
+  }
+
+  if (code && state) {
+    add('p', 'Kopiere diese Zeile und füge sie in der Kommandozeile ein. / Copy this line and paste it into the command line.');
+    var line = add('div', code + ' ' + state);
+    line.setAttribute('data-line', '');
+    return;
+  }
+
+  add('p', 'Ungültiger Aufruf. Starte das Verbinden neu. / Invalid request. Start connecting again.', 'error');
+})();
+</script>
+</body>
+</html>
